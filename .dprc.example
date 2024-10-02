@@ -1,0 +1,9 @@
+{
+  "dpApiUrl": "https://api.distributed.press",
+  "socialInboxUrl": "https://social.distributed.press",
+  "authToken": "your-auth-token",
+  "keypair": {
+    "publicKey": "your-public-key",
+    "privateKey": "your-private-key"
+  }
+}
