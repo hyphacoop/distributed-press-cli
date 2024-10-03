@@ -1,0 +1,22 @@
+{
+  "name": "distributed-press-cli",
+  "version": "1.0.0",
+  "description": "CLI for interacting with Distributed Press API and Social Inbox",
+  "main": "src/index.js",
+  "bin": {
+    "dp-cli": "./bin/dp-cli.js"
+  },
+  "scripts": {
+    "start": "node ./bin/dp-cli.js"
+  },
+  "keywords": [],
+  "author": "distributed.press",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "inquirer": "^11.1.0",
+    "rc": "^1.2.8"
+  }
+}
