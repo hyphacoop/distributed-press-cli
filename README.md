@@ -1,21 +1,25 @@
 # Distributed Press CLI
 
-A **Command Line Interface (CLI)** for interacting with the Distributed Press API and Social Inbox. Manage your sites, register them with Social Inbox, and engage with followers seamlessly from the command line.
+A **Command Line Interface (CLI)** for interacting with the Distributed Press API and Social Inbox. Manage your sites, register your ActivityPub actor, and engage with followers seamlessly from the command line.
 
 ## Table of Contents
 
 - [Installation](#installation)
+- [Setup](#setup)
+  - [Generate a Keypair](#generate-a-keypair)
+  - [Set Your Authentication Token](#set-your-authentication-token)
+  - [Register Your Actor](#register-your-actor)
 - [Configuration](#configuration)
 - [Usage](#usage)
-  - [Create a New Site](#create-a-new-site)
-  - [Register Site with Social Inbox](#register-site-with-social-inbox)
   - [Send a Post to Followers](#send-a-post-to-followers)
 - [Commands](#commands)
+  - [`generate-keypair`](#generate-keypair)
+  - [`set-auth-token`](#set-auth-token)
+  - [`register-actor`](#register-actor)
+  - [`send-post`](#send-post)
 - [Examples](#examples)
 - [License](#license)
 - [Resources](#resources)
-
-## Installation
 
 ## Installation
 
@@ -24,12 +28,12 @@ A **Command Line Interface (CLI)** for interacting with the Distributed Press AP
 You can use `dp-cli` without installation by running:
 
 ```bash
-npx dp-cli
+npx dp-cli <command>
 ```
 
 ### Global Installation with npm
 
-To install dp-cli globally, use:
+To install `dp-cli` globally, use:
 
 ```bash
 npm install -g dp-cli
@@ -39,9 +43,9 @@ Once installed, you can use `dp-cli` from anywhere in your terminal.
 
 ## Setup
 
-Before using the CLI, you need to generate a keypair and obtain an authentication token.
+Before using the CLI, you need to generate a keypair, set your authentication token, and register your ActivityPub actor.
 
-### Generate Keypair
+### Generate a Keypair
 
 Run the following command to generate a new RSA keypair:
 
@@ -49,43 +53,46 @@ Run the following command to generate a new RSA keypair:
 dp-cli generate-keypair
 ```
 
+This will generate a keypair and save it to your `.dprc` configuration file.
+
 ### Set Your Authentication Token
+
 Obtain your `authToken` from your Distributed Press API administrator and set it using:
 
 ```bash
 dp-cli set-auth-token
 ```
 
+You will be prompted to enter your authentication token.
+
 ### Register Your Actor
+
 Register your ActivityPub actor with the Social Inbox:
 
 ```bash
 dp-cli register-actor
 ```
 
+**Prompts:**
+
+1. **Enter your actor username:**  
+   _(e.g., "@username@yourdomain.com")_
+
+2. **Enter your actor URL:**  
+   _(e.g., "https://yourdomain.com/actor")_
+
+3. **Enter your public key ID:**  
+   _(e.g., "https://yourdomain.com/actor#main-key")_
+
+This will register your actor with the Social Inbox and save the details to your configuration.
+
 ## Configuration
 
-The CLI uses a configuration file named `.dprc` to store API URLs, authentication tokens, and keypairs. The configuration file follows the format expected by the [RC module](https://www.npmjs.com/package/rc), which loads configuration options in a flexible way. Here’s how to set it up:
+The CLI uses a configuration file named `.dprc` to store API URLs, authentication tokens, keypairs, and actor information. The configuration file follows the format expected by the [`rc` module](https://www.npmjs.com/package/rc), which loads configuration options in a flexible way.
 
-### 1. Create the `.dprc` File
+### Configuration File Structure
 
-Copy the example configuration file to your home directory:
-
-- **Unix/Linux/macOS:**
-
-  ```bash
-  cp .dprc.example ~/.dprc
-  ```
-
-- **Windows (PowerShell):**
-
-  ```powershell
-  Copy-Item .dprc.example $env:USERPROFILE\.dprc
-  ```
-
-### 2. Edit the `.dprc` File
-
-Open the `.dprc` file in your preferred text editor and replace the placeholder values with your actual configuration:
+Your `.dprc` file should look like this:
 
 ```json
 {
@@ -95,7 +102,10 @@ Open the `.dprc` file in your preferred text editor and replace the placeholder 
   "keypair": {
     "publicKeyPem": "<your-public-key>",
     "privateKeyPem": "<your-private-key>"
-  }
+  },
+  "actorUsername": "<your-actor-username>",
+  "actorUrl": "<your-actor-url>",
+  "publicKeyId": "<your-public-key-id>"
 }
 ```
 
@@ -103,114 +113,76 @@ Open the `.dprc` file in your preferred text editor and replace the placeholder 
 - **`socialInboxUrl`:** The base URL for the Social Inbox.
 - **`authToken`:** Your authentication token for API access.
 - **`keypair`:** Your public and private keys for secure interactions.
+- **`actorUsername`:** Your ActivityPub actor username.
+- **`actorUrl`:** The URL of your actor.
+- **`publicKeyId`:** The ID of your public key.
 
-*Ensure that your `.dprc` file is **not** committed to version control to keep your credentials secure.*
+_Ensure that your `.dprc` file is **not** committed to version control to keep your credentials secure._
 
 ## Usage
 
 Once installed and configured, you can use the `dp-cli` command followed by specific commands to interact with the APIs.
 
-### Create a New Site
-
-Initialize a new site on Distributed Press.
-
-```bash
-dp-cli create-site
-```
-
-**Prompts:**
-
-1. **Enter your site name:**  
-   *(e.g., "My Awesome Site")*
-
-2. **Enter your site URL:**  
-   *(e.g., "https://myawesomesite.com")*
-
-**Output:**
-
-```
-Creating a new site on Distributed Press...
-Site created successfully!
-Site ID: 12345
-Site URL: https://myawesomesite.com
-```
-
-### Register Site with Social Inbox
-
-Register your newly created site with the Social Inbox.
-
-```bash
-dp-cli register-site
-```
-
-**Prompts:**
-
-1. **Select a site to register:**  
-   *(List of your created sites)*
-
-**Output:**
-
-```
-Registering site with Social Inbox...
-Site registered with Social Inbox successfully!
-Registration ID: abcde-12345
-```
-
 ### Send a Post to Followers
 
-Publish a post to your followers.
+Publish a post to your followers:
 
 ```bash
 dp-cli send-post --message "Hello, Fediverse!"
 ```
-
-**Prompts:**
-
-1. **Select a site to send a post from:**  
-   *(List of your registered sites)*
 
 **Output:**
 
 ```
 Sending a post to followers...
 Post sent successfully!
-Post ID: post-67890
+Response: { ... }
 ```
 
 ## Commands
 
-Here's a summary of the available commands in the Distributed Press CLI:
-
-### `create-site`
+### `generate-keypair`
 
 **Description:**  
-Create a new site on Distributed Press.
+Generate a new RSA keypair and save it to your configuration.
 
 **Usage:**
 
 ```bash
-dp-cli create-site
+dp-cli generate-keypair
 ```
 
-**Prompts:**
-
-- Enter your site name.
-- Enter your site URL.
-
-### `register-site`
+### `set-auth-token`
 
 **Description:**  
-Register an existing site with the Social Inbox.
+Set your authentication token for API access.
 
 **Usage:**
 
 ```bash
-dp-cli register-site
+dp-cli set-auth-token
+```
+
+**Prompt:**
+
+- Enter your authentication token.
+
+### `register-actor`
+
+**Description:**  
+Register your ActivityPub actor with the Social Inbox.
+
+**Usage:**
+
+```bash
+dp-cli register-actor
 ```
 
 **Prompts:**
 
-- Select a site to register.
+- Enter your actor username.
+- Enter your actor URL.
+- Enter your public key ID.
 
 ### `send-post`
 
@@ -227,75 +199,70 @@ dp-cli send-post --message "Your message here"
 
 - `-m, --message <message>`: The content of the post.
 
-**Prompts:**
-
-- Select a site to send the post from.
-
 ## Examples
 
-### Example 1: Creating and Registering a Site
+### Example: Full Workflow
 
 ```bash
-# Create a new site
-dp-cli create-site
+# Generate a keypair
+dp-cli generate-keypair
 ```
 
-*Prompts:*
+_Output:_
 
 ```
-Enter your site name: My Awesome Site
-Enter your site URL: https://myawesomesite.com
-```
-
-*Output:*
-
-```
-Creating a new site on Distributed Press...
-Site created successfully!
-Site ID: 12345
-Site URL: https://myawesomesite.com
+Keypair generated and saved to configuration.
 ```
 
 ```bash
-# Register the newly created site with Social Inbox
-dp-cli register-site
+# Set your authentication token
+dp-cli set-auth-token
 ```
 
-*Prompts:*
+_Prompt:_
 
 ```
-Select a site to register:
-> My Awesome Site (https://myawesomesite.com)
+Enter your authentication token:
 ```
 
-*Output:*
+_Output:_
 
 ```
-Registering site with Social Inbox...
-Site registered with Social Inbox successfully!
-Registration ID: abcde-12345
+Authentication token saved to configuration.
 ```
 
-### Example 2: Sending a Post
+```bash
+# Register your actor
+dp-cli register-actor
+```
+
+_Prompts:_
+
+```
+Enter your actor username: @alice@yourdomain.com
+Enter your actor URL: https://yourdomain.com/alice
+Enter your public key ID: https://yourdomain.com/alice#main-key
+```
+
+_Output:_
+
+```
+Registering your actor with the Social Inbox...
+Actor registered with Social Inbox successfully!
+Response: { ... }
+```
 
 ```bash
 # Send a post to followers
 dp-cli send-post --message "Hello, Fediverse!"
 ```
 
-*Prompts:*
-
-```
-Select a site to send a post from:
-> My Awesome Site (https://myawesomesite.com)
-```
-
-*Output:*
+_Output:_
 
 ```
 Sending a post to followers...
 Post sent successfully!
-Post ID: post-67890
+Response: { ... }
 ```
 
 ## License
@@ -309,3 +276,14 @@ This project is licensed under the [MIT License](LICENSE).
 
 - **Distributed Press Documentation:**  
   [https://docs.distributed.press/](https://docs.distributed.press/)
+
+- **RC Module Documentation:**  
+  [https://www.npmjs.com/package/rc](https://www.npmjs.com/package/rc)
+
+- **HTTP Signed Fetch:**  
+  [https://www.npmjs.com/package/http-signed-fetch](https://www.npmjs.com/package/http-signed-fetch)
+
+## Notes
+
+- **Security:** Ensure that your `.dprc` file and any keys or tokens are stored securely and are not exposed publicly.
+- **Dependencies:** Make sure you have the necessary dependencies installed as per the `package.json` file.
