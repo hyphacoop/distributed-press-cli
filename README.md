@@ -39,7 +39,7 @@ Once installed, you can use `dp-cli` from anywhere in your terminal.
 
 ## Configuration
 
-The CLI uses a configuration file named `.dprc` to store API URLs, authentication tokens, and keypairs. Here's how to set it up:
+The CLI uses a configuration file named `.dprc` to store API URLs, authentication tokens, and keypairs. The configuration file follows the format expected by the [RC module](https://www.npmjs.com/package/rc), which loads configuration options in a flexible way. Here’s how to set it up:
 
 ### 1. Create the `.dprc` File
 
