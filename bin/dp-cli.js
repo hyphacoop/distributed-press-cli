@@ -4,7 +4,7 @@ const chalk = require('chalk')
 const createSite = require('../src/commands/createSite')
 const registerActor = require('../src/commands/registerActor')
 const sendPost = require('../src/commands/sendPost')
-const generateKeypairCommand = require('./commands/generateKeypair')
+const generateKeypairCommand = require('../src/commands/generateKeypair')
 const setAuthTokenCommand = require('../src/commands/setAuthToken')
 
 const program = new Command()

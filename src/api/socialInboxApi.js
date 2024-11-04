@@ -1,9 +1,14 @@
 const config = require('../config/config')
 const chalk = require('chalk')
-const httpsig = require('http-signed-fetch')
+
+async function loadHttpSig () {
+  // Dynamically import the `http-signed-fetch` package.
+  return await import('http-signed-fetch')
+}
 
 async function registerActor (actorUsername, actorInfo) {
   try {
+    const httpsig = await loadHttpSig()
     const url = `${config.socialInboxUrl}/${encodeURIComponent(actorUsername)}`
     const signer = new httpsig.Signer({
       keyId: actorInfo.publicKeyId,
@@ -37,6 +42,7 @@ async function registerActor (actorUsername, actorInfo) {
 
 async function sendPost (actorUsername, activity) {
   try {
+    const httpsig = await loadHttpSig()
     const url = `${config.socialInboxUrl}/${encodeURIComponent(actorUsername)}/outbox`
     const signer = new httpsig.Signer({
       keyId: config.publicKeyId,
