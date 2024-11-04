@@ -37,6 +37,18 @@ npm install -g dp-cli
 
 Once installed, you can use `dp-cli` from anywhere in your terminal.
 
+## Setup
+
+Before using the CLI, you need to generate a keypair and obtain an authentication token.
+
+### Generate Keypair
+
+Run the following command to generate a new RSA keypair:
+
+```bash
+dp-cli generate-keypair
+```
+
 ## Configuration
 
 The CLI uses a configuration file named `.dprc` to store API URLs, authentication tokens, and keypairs. The configuration file follows the format expected by the [RC module](https://www.npmjs.com/package/rc), which loads configuration options in a flexible way. Here’s how to set it up:

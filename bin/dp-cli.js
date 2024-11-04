@@ -4,6 +4,7 @@ const chalk = require('chalk')
 const createSite = require('../src/commands/createSite')
 const registerSite = require('../src/commands/registerSite')
 const sendPost = require('../src/commands/sendPost')
+const generateKeypairCommand = require('./commands/generateKeypair')
 
 const program = new Command()
 
@@ -39,6 +40,11 @@ program
   .action((options) => {
     sendPost(options.message)
   })
+
+program
+  .command('generate-keypair')
+  .description('Generate a new RSA keypair')
+  .action(generateKeypairCommand)
 
 // Parse arguments
 program.parse(process.argv)
