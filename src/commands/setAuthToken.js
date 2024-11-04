@@ -17,9 +17,12 @@ function setAuthTokenCommand () {
     .then((answers) => {
       config.authToken = answers.authToken
 
+      // Exclude unwanted properties
+      const { _, ...cleanConfig } = config
+
       // Write to .dprc file
       const configPath = path.join(process.cwd(), '.dprc')
-      fs.writeFileSync(configPath, JSON.stringify(config, null, 2))
+      fs.writeFileSync(configPath, JSON.stringify(cleanConfig, null, 2))
 
       console.log(chalk.green('Authentication token saved to configuration.'))
     })

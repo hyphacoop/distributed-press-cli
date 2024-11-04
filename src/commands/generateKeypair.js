@@ -18,15 +18,18 @@ function generateKeypairCommand () {
       }
     })
 
-    // Save the keypair to config
+    // Update the keypair in config
     config.keypair = {
       publicKeyPem: publicKey,
       privateKeyPem: privateKey
     }
 
+    // Create a new config object excluding unwanted properties
+    const { _, ...cleanConfig } = config
+
     // Optionally, write to .dprc file
     const configPath = path.join(process.cwd(), '.dprc')
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2))
+    fs.writeFileSync(configPath, JSON.stringify(cleanConfig, null, 2))
 
     console.log(chalk.green('Keypair generated and saved to configuration.'))
   } catch (error) {
