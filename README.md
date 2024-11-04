@@ -49,6 +49,20 @@ Run the following command to generate a new RSA keypair:
 dp-cli generate-keypair
 ```
 
+### Set Your Authentication Token
+Obtain your `authToken` from your Distributed Press API administrator and set it using:
+
+```bash
+dp-cli set-auth-token
+```
+
+### Register Your Actor
+Register your ActivityPub actor with the Social Inbox:
+
+```bash
+dp-cli register-actor
+```
+
 ## Configuration
 
 The CLI uses a configuration file named `.dprc` to store API URLs, authentication tokens, and keypairs. The configuration file follows the format expected by the [RC module](https://www.npmjs.com/package/rc), which loads configuration options in a flexible way. Here’s how to set it up:
