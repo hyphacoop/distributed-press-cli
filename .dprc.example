@@ -5,5 +5,8 @@
   "keypair": {
     "publicKeyPem": "<your-public-key>",
     "privateKeyPem": "<your-private-key>"
-  }
+  },
+  "actorUsername": "<your-actor-username>",
+  "actorUrl": "<your-actor-url>",
+  "publicKeyId": "<your-public-key-id>"
 }
