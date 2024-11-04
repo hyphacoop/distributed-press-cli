@@ -2,7 +2,7 @@
 const { Command } = require('commander')
 const chalk = require('chalk')
 const createSite = require('../src/commands/createSite')
-const registerSite = require('../src/commands/registerSite')
+const registerActor = require('../src/commands/registerActor')
 const sendPost = require('../src/commands/sendPost')
 const generateKeypairCommand = require('./commands/generateKeypair')
 const setAuthTokenCommand = require('../src/commands/setAuthToken')
@@ -28,10 +28,10 @@ Examples:
 `)
 
 program
-  .command('register-site')
-  .description('Register the site with Social Inbox')
+  .command('register-actor')
+  .description('Register your actor with the Social Inbox')
   .action(() => {
-    registerSite()
+    registerActor()
   })
 
 program
