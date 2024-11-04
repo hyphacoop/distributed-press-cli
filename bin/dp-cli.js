@@ -5,6 +5,7 @@ const createSite = require('../src/commands/createSite')
 const registerSite = require('../src/commands/registerSite')
 const sendPost = require('../src/commands/sendPost')
 const generateKeypairCommand = require('./commands/generateKeypair')
+const setAuthTokenCommand = require('../src/commands/setAuthToken')
 
 const program = new Command()
 
@@ -45,6 +46,13 @@ program
   .command('generate-keypair')
   .description('Generate a new RSA keypair')
   .action(generateKeypairCommand)
+
+program
+  .command('set-auth-token')
+  .description('Set your authentication token')
+  .action(() => {
+    setAuthTokenCommand()
+  })
 
 // Parse arguments
 program.parse(process.argv)
