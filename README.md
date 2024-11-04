@@ -17,28 +17,25 @@ A **Command Line Interface (CLI)** for interacting with the Distributed Press AP
 
 ## Installation
 
-### 1. Clone the Repository
+## Installation
+
+### Using npx
+
+You can use `dp-cli` without installation by running:
 
 ```bash
-git clone https://github.com/hyphacoop/distributed-press-cli.git
-cd distributed-press-cli
+npx dp-cli
 ```
 
-### 2. Install Dependencies
+### Global Installation with npm
+
+To install dp-cli globally, use:
 
 ```bash
-npm install
+npm install -g dp-cli
 ```
 
-### 3. Make the CLI Globally Accessible
-
-To use `dp-cli` from anywhere in your terminal, link the package globally:
-
-```bash
-npm link
-```
-
-*Note: You might need administrative privileges to run the above command.*
+Once installed, you can use `dp-cli` from anywhere in your terminal.
 
 ## Configuration
 
