@@ -11,9 +11,14 @@ const dpApiClient = axios.create({
 })
 
 // Create a new site
-async function createSite (name, url) {
+async function createSite (domain, isPublic = true, protocols = { http: true, hyper: true, ipfs: true }) {
   try {
-    const response = await dpApiClient.post('/sites', { name, url })
+    const payload = {
+      domain,
+      public: isPublic,
+      protocols
+    }
+    const response = await dpApiClient.post('/sites', payload)
     return response
   } catch (error) {
     console.error(chalk.red('DP API Error:', error.response ? error.response.data : error.message))
@@ -23,7 +28,13 @@ async function createSite (name, url) {
 
 // Get all sites
 async function getSites () {
-  return await dpApiClient.get('/sites')
+  try {
+    const response = await dpApiClient.get('/sites')
+    return response
+  } catch (error) {
+    console.error(chalk.red('DP API Error:', error.response ? error.response.data : error.message))
+    throw error
+  }
 }
 
 module.exports = {
