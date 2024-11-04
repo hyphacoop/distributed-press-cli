@@ -1,15 +1,15 @@
 const rc = require('rc')
 
 const defaults = {
-  dpApiUrl: 'https://api.distributed.press',
-  socialInboxUrl: 'https://social.distributed.press',
+  dpApiUrl: 'https://api.distributed.press/v1',
+  socialInboxUrl: 'https://social.distributed.press/v1',
   authToken: '',
   keypair: {
-    publicKey: '',
-    privateKey: ''
+    publicKeyPem: '',
+    privateKeyPem: ''
   }
 }
 
-const config = rc('dprc', defaults)
+const config = rc('dp', defaults)
 
 module.exports = config

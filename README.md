@@ -75,12 +75,12 @@ Open the `.dprc` file in your preferred text editor and replace the placeholder 
 
 ```json
 {
-  "dpApiUrl": "https://api.distributed.press",
-  "socialInboxUrl": "https://social.distributed.press",
-  "authToken": "your-auth-token",
+  "dpApiUrl": "https://api.distributed.press/v1",
+  "socialInboxUrl": "https://social.distributed.press/v1",
+  "authToken": "<your-auth-token>",
   "keypair": {
-    "publicKey": "your-public-key",
-    "privateKey": "your-private-key"
+    "publicKeyPem": "<your-public-key>",
+    "privateKeyPem": "<your-private-key>"
   }
 }
 ```
