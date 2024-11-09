@@ -39,11 +39,10 @@ program
   })
 
 program
-  .command('send-post')
-  .description('Send a post to followers')
-  .requiredOption('-m, --message <message>', 'Post message')
-  .action((options) => {
-    sendPost(options.message)
+  .command('send-post <activityPath>')
+  .description('Send a post to followers using an activity JSON file')
+  .action((activityPath) => {
+    sendPost(activityPath)
   })
 
 program

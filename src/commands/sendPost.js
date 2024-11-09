@@ -1,34 +1,54 @@
-const inquirer = require('inquirer')
-const socialInboxApi = require('../api/socialInboxApi')
+const fs = require('fs')
+const path = require('path')
 const chalk = require('chalk')
 const config = require('../config/config')
-const { v4: uuidv4 } = require('uuid')
+const socialInboxApi = require('../api/socialInboxApi')
 
-async function sendPost (message) {
+async function sendPost (activityPath) {
   try {
     console.log(chalk.blue('Sending a post to followers...'))
 
     const actorUsername = config.actorUsername
 
     if (!actorUsername) {
-      console.log(chalk.yellow('No actor registered. Please register an actor first using "register-actor" command.'))
+      console.log(
+        chalk.yellow(
+          'No actor registered. Please register an actor first using "register-actor" command.'
+        )
+      )
       return
     }
 
-    const activityId = `${config.socialInboxUrl}/${encodeURIComponent(actorUsername)}/outbox/${uuidv4()}`
+    // Resolve the activity file path
+    const resolvedPath = path.resolve(activityPath)
 
-    const activity = {
-      '@context': 'https://www.w3.org/ns/activitystreams',
-      id: activityId,
-      type: 'Create',
-      actor: config.actorUrl,
-      object: {
-        id: `${activityId}#object`,
-        type: 'Note',
-        content: message,
-        published: new Date().toISOString(),
-        to: ['https://www.w3.org/ns/activitystreams#Public']
-      }
+    // Check if the file exists
+    if (!fs.existsSync(resolvedPath)) {
+      console.error(chalk.red(`Activity file not found at path: ${resolvedPath}`))
+      return
+    }
+
+    // Read the activity from the file
+    const activityData = fs.readFileSync(resolvedPath, 'utf-8')
+
+    // Parse the activity JSON
+    const activity = JSON.parse(activityData)
+
+    // Validate the activity
+    if (!activity || !activity.type) {
+      console.error(chalk.red('Invalid activity data. Please provide a valid ActivityStreams JSON.'))
+      return
+    }
+
+    // Optionally, update activity IDs and timestamps
+    const activityId = `${config.socialInboxUrl}/${encodeURIComponent(actorUsername)}/outbox/${uuidv4()}`
+    activity.id = activity.id || activityId
+    activity.published = activity.published || new Date().toISOString()
+    activity.actor = activity.actor || config.actorUrl
+
+    // If the activity contains an object (e.g., a Note), ensure it has an ID
+    if (activity.object && !activity.object.id) {
+      activity.object.id = `${activity.id}#object`
     }
 
     // Send post via Social Inbox API
