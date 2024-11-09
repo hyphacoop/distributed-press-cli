@@ -8,6 +8,7 @@ const generateKeypairCommand = require('../src/commands/generateKeypair')
 const setAuthTokenCommand = require('../src/commands/setAuthToken')
 const publishSite = require('../src/commands/publishSite')
 const patchSite = require('../src/commands/patchSite')
+const registerPublisher = require('../src/commands/registerPublisher')
 
 const program = new Command()
 
@@ -61,6 +62,13 @@ program
   .description('Publish a new site with content from the specified folder')
   .action((folder) => {
     publishSite(folder)
+  })
+
+program
+  .command('register')
+  .description('Register for a trial publisher account')
+  .action(() => {
+    registerPublisher()
   })
 
 program
