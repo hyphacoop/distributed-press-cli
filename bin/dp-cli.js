@@ -9,6 +9,7 @@ const setAuthTokenCommand = require('../src/commands/setAuthToken')
 const publishSite = require('../src/commands/publishSite')
 const patchSite = require('../src/commands/patchSite')
 const registerPublisher = require('../src/commands/registerPublisher')
+const cloneSite = require('../src/commands/cloneSite')
 
 const program = new Command()
 
@@ -77,6 +78,13 @@ program
   .option('-i, --id <siteId>', 'ID of the site to patch')
   .action((folder, options) => {
     patchSite(folder, options.id)
+  })
+
+program
+  .command('clone <siteId>')
+  .description('Clone a website from its HTTPS version')
+  .action((siteId) => {
+    cloneSite(siteId)
   })
 
 // Parse arguments
