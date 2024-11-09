@@ -16,9 +16,11 @@
     "axios": "^1.7.7",
     "chalk": "^4.1.2",
     "commander": "^12.1.0",
+    "globby": "^14.0.2",
     "http-signed-fetch": "^1.0.1",
     "inquirer": "^8.2.4",
     "rc": "^1.2.8",
+    "tar": "^7.4.3",
     "uuid": "^11.0.2"
   }
 }

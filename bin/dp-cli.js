@@ -6,6 +6,8 @@ const registerActor = require('../src/commands/registerActor')
 const sendPost = require('../src/commands/sendPost')
 const generateKeypairCommand = require('../src/commands/generateKeypair')
 const setAuthTokenCommand = require('../src/commands/setAuthToken')
+const publishSite = require('../src/commands/publishSite')
+const patchSite = require('../src/commands/patchSite')
 
 const program = new Command()
 
@@ -52,6 +54,21 @@ program
   .description('Set your authentication token')
   .action(() => {
     setAuthTokenCommand()
+  })
+
+program
+  .command('publish <folder>')
+  .description('Publish a new site with content from the specified folder')
+  .action((folder) => {
+    publishSite(folder)
+  })
+
+program
+  .command('patch <folder>')
+  .description('Update an existing site with content from the specified folder')
+  .option('-i, --id <siteId>', 'ID of the site to patch')
+  .action((folder, options) => {
+    patchSite(folder, options.id)
   })
 
 // Parse arguments
