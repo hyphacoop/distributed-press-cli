@@ -5,6 +5,7 @@ A **Command Line Interface (CLI)** for interacting with the Distributed Press AP
 ## Table of Contents
 
 - [Installation](#installation)
+  - [Node.js and npm Setup](#nodejs-and-npm-setup)
 - [Setup](#setup)
   - [Generate a Keypair](#generate-a-keypair)
   - [Set Your Authentication Token](#set-your-authentication-token)
@@ -22,6 +23,18 @@ A **Command Line Interface (CLI)** for interacting with the Distributed Press AP
 - [Resources](#resources)
 
 ## Installation
+
+### Node.js and npm Setup
+
+To use `dp-cli`, you’ll need Node.js and npm. Please refer to the [Node.js official documentation](https://nodejs.org/) to install Node.js. Once installed, npm (Node Package Manager) will be available, allowing you to run commands like `npx` and `npm`.
+
+- **npm**: Comes bundled with Node.js. Verify installation by running:
+  ```bash
+  node -v
+  npm -v
+  ```
+
+For additional help with npm commands, see the [npm documentation](https://docs.npmjs.com/).
 
 ### Using npx
 
@@ -53,9 +66,25 @@ Run the following command to generate a new RSA keypair:
 dp-cli generate-keypair
 ```
 
+**Purpose:**  
+This keypair is used for authenticating your interactions with the Social Inbox, ensuring secure communication and verifying your identity.
+
+**Note:**  
+If you only plan to use the DP API for static file publishing, generating a keypair might not be necessary. However, it's recommended for enhanced security and functionality when interacting with the Social Inbox.
+
 This will generate a keypair and save it to your `.dprc` configuration file.
 
-### Set Your Authentication Token
+### Register as Publisher (Trial Account)
+
+Register a trial publisher account on Distributed Press using your email:
+
+```bash
+dp-cli register-publisher
+```
+
+You will be prompted for your name and email. Note: currently, only one site per email is allowed.
+
+### OR Set Your Authentication Token Manually
 
 Obtain your `authToken` from your Distributed Press API administrator and set it using:
 
@@ -152,6 +181,14 @@ Generate a new RSA keypair and save it to your configuration.
 dp-cli generate-keypair
 ```
 
+### `register-publisher`
+
+Register a trial publisher account with Distributed Press:
+
+```bash
+dp-cli register-publisher
+```
+
 ### `set-auth-token`
 
 **Description:**  
@@ -186,32 +223,47 @@ dp-cli register-actor
 
 ### `send-post`
 
-**Description:**  
-Send a post to your followers.
-
-**Usage:**
+Send an activity post to your followers and publish it on the DP site:
 
 ```bash
-dp-cli send-post --message "Your message here"
+dp-cli send-post --path ./path_to_activity.json
 ```
 
-**Options:**
+### `publish-site`
 
-- `-m, --message <message>`: The content of the post.
+Upload and publish static content to the DP site from a specified directory:
+
+```bash
+dp-cli publish ./folder_here
+```
+
+### `clone-site`
+
+Clone a website by creating a static copy from its HTTP URL:
+
+```bash
+dp-cli clone-site --id <site-id>
+```
 
 ## Examples
 
 ### Example: Full Workflow
 
 ```bash
+# Register as a publisher
+dp-cli register-publisher
+```
+
+_Prompts:_
+
+```
+Enter your name: Alice
+Enter your email: alice@example.com
+```
+
+```bash
 # Generate a keypair
 dp-cli generate-keypair
-```
-
-_Output:_
-
-```
-Keypair generated and saved to configuration.
 ```
 
 ```bash
@@ -223,12 +275,6 @@ _Prompt:_
 
 ```
 Enter your authentication token:
-```
-
-_Output:_
-
-```
-Authentication token saved to configuration.
 ```
 
 ```bash
@@ -244,25 +290,14 @@ Enter your actor URL: https://yourdomain.com/alice
 Enter your public key ID: https://yourdomain.com/alice#main-key
 ```
 
-_Output:_
-
-```
-Registering your actor with the Social Inbox...
-Actor registered with Social Inbox successfully!
-Response: { ... }
+```bash
+# Publish site content from a folder
+dp-cli publish ./folder_here
 ```
 
 ```bash
-# Send a post to followers
-dp-cli send-post --message "Hello, Fediverse!"
-```
-
-_Output:_
-
-```
-Sending a post to followers...
-Post sent successfully!
-Response: { ... }
+# Send a post to followers with activity JSON
+dp-cli send-post --path ./path_to_activity.json
 ```
 
 ## License
@@ -271,17 +306,20 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Resources
 
-- **Social Inbox:**  
-  [https://github.com/hyphacoop/social.distributed.press](https://github.com/hyphacoop/social.distributed.press)
-
 - **Distributed Press Documentation:**  
   [https://docs.distributed.press/](https://docs.distributed.press/)
+
+- **Social Inbox Documentation:**  
+  [https://github.com/hyphacoop/social.distributed.press](https://github.com/hyphacoop/social.distributed.press)
 
 - **RC Module Documentation:**  
   [https://www.npmjs.com/package/rc](https://www.npmjs.com/package/rc)
 
 - **HTTP Signed Fetch:**  
   [https://www.npmjs.com/package/http-signed-fetch](https://www.npmjs.com/package/http-signed-fetch)
+
+- **Setting Up Node.js**:  
+  [https://nodejs.org/en/download/](https://nodejs.org/en/download/)
 
 ## Notes
 
