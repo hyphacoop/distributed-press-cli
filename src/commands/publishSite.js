@@ -2,9 +2,13 @@ const fs = require('fs')
 const path = require('path')
 const tar = require('tar')
 const axios = require('axios')
-const globby = require('globby')
 const chalk = require('chalk')
 const config = require('../config/config')
+
+async function loadGlobby () {
+  const globbyModule = await import('globby')
+  return globbyModule.globby || globbyModule.default || globbyModule
+}
 
 async function publishSite (folder) {
   try {
@@ -15,6 +19,9 @@ async function publishSite (folder) {
       console.error(chalk.red(`Folder "${folder}" does not exist.`))
       return
     }
+
+    // Load globby dynamically
+    const globby = await loadGlobby()
 
     // Create a tarball of the folder
     const tarballPath = path.join(process.cwd(), 'site.tar')
