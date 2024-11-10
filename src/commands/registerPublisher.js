@@ -11,15 +11,8 @@ async function registerPublisher () {
       {
         type: 'input',
         name: 'name',
-        message: 'Enter your name or publisher name:',
+        message: 'Enter your email:',
         validate: (input) => (input ? true : 'Name cannot be empty.')
-      },
-      {
-        type: 'input',
-        name: 'email',
-        message: 'Enter your email address:',
-        validate: (input) =>
-          /\S+@\S+\.\S+/.test(input) ? true : 'Please enter a valid email address.'
       }
     ])
 
@@ -27,11 +20,11 @@ async function registerPublisher () {
 
     const response = await axios.post(`${config.dpApiUrl}/publisher/trial`, {
       name: answers.name,
-      email: answers.email,
       limited: true
     })
 
-    const authToken = response.data.authToken
+    // The response is likely a JSON string containing the authToken
+    const authToken = response.data
 
     // Save authToken to config
     config.authToken = authToken
@@ -43,7 +36,7 @@ async function registerPublisher () {
     console.log(chalk.green('Trial account registered successfully!'))
     console.log(chalk.green('Authentication token saved to configuration.'))
   } catch (error) {
-    console.error(chalk.red('Error registering trial account:', error.message))
+    console.error(chalk.red('Error registering trial account:'), error.response ? error.response.data : error.message)
   }
 }
 
