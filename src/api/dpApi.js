@@ -18,10 +18,15 @@ async function createSite (domain, isPublic = true, protocols = { http: true, hy
       public: isPublic,
       protocols
     }
+    console.log(chalk.blue('Sending payload to DP API:'), payload)
     const response = await dpApiClient.post('/sites', payload)
     return response
   } catch (error) {
-    console.error(chalk.red('DP API Error:', error.response ? error.response.data : error.message))
+    if (error.response) {
+      console.error(chalk.red('DP API Error:'), error.response.status, error.response.statusText, error.response.data || '')
+    } else {
+      console.error(chalk.red('DP API Error:'), error.message)
+    }
     throw error
   }
 }
@@ -32,7 +37,11 @@ async function getSites () {
     const response = await dpApiClient.get('/sites')
     return response
   } catch (error) {
-    console.error(chalk.red('DP API Error:', error.response ? error.response.data : error.message))
+    if (error.response) {
+      console.error(chalk.red('DP API Error:'), error.response.status, error.response.statusText, error.response.data || '')
+    } else {
+      console.error(chalk.red('DP API Error:'), error.message)
+    }
     throw error
   }
 }

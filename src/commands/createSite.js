@@ -1,34 +1,55 @@
 const inquirer = require('inquirer')
-const dpApi = require('../api/dpApi')
 const chalk = require('chalk')
+const axios = require('axios')
+const config = require('../config/config')
+const fs = require('fs')
+const path = require('path')
 
 async function createSite () {
   try {
     console.log(chalk.blue('Creating a new site on Distributed Press...'))
 
-    // Prompt user for site details
     const answers = await inquirer.prompt([
       {
         type: 'input',
-        name: 'siteName',
-        message: 'Enter your site name:',
-        validate: (input) => input ? true : 'Site name cannot be empty.'
+        name: 'domain',
+        message: 'Enter your site domain (e.g., example.com):',
+        validate: (input) => (input ? true : 'Domain cannot be empty.')
       },
       {
-        type: 'input',
-        name: 'siteUrl',
-        message: 'Enter your site URL:',
-        validate: (input) => /^https?:\/\/.+/.test(input) ? true : 'Please enter a valid URL.'
+        type: 'confirm',
+        name: 'isPublic',
+        message: 'Is your site public?',
+        default: true
       }
     ])
 
-    const response = await dpApi.createSite(answers.siteName, answers.siteUrl)
+    // According to the DP API: domain is a string, public is boolean
+    // The user input: domain, isPublic
+    const payload = {
+      domain: answers.domain,
+      public: answers.isPublic,
+      protocols: { http: true, hyper: true, ipfs: true } // default protocols
+    }
+
+    console.log(chalk.blue(`Sending payload to DP API: ${JSON.stringify(payload, null, 2)}`))
+
+    const response = await axios.post(`${config.dpApiUrl}/sites`, payload, {
+      headers: {
+        Authorization: `Bearer ${config.authToken}`,
+        'Content-Type': 'application/json'
+      }
+    })
 
     console.log(chalk.green('Site created successfully!'))
     console.log(`Site ID: ${response.data.id}`)
-    console.log(`Site URL: ${response.data.url}`)
+    console.log(`Site Info: ${JSON.stringify(response.data, null, 2)}`)
   } catch (error) {
-    console.error(chalk.red('Error creating site:'), error.message)
+    if (error.response && error.response.data) {
+      console.error(chalk.red('DP API Error:'), JSON.stringify(error.response.data, null, 2))
+    } else {
+      console.error(chalk.red('Error creating site:'), error.message)
+    }
   }
 }
 
