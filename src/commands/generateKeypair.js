@@ -25,11 +25,11 @@ function generateKeypairCommand () {
     }
 
     // Create a new config object excluding unwanted properties
-    const { _, ...cleanConfig } = config
+    const { _, configs, config: configPath, ...cleanConfig } = config
 
-    // Optionally, write to .dprc file
-    const configPath = path.join(process.cwd(), '.dprc')
-    fs.writeFileSync(configPath, JSON.stringify(cleanConfig, null, 2))
+    // Write the cleaned config to the .dprc file
+    const configFilePath = path.join(process.cwd(), '.dprc')
+    fs.writeFileSync(configFilePath, JSON.stringify(cleanConfig, null, 2))
 
     console.log(chalk.green('Keypair generated and saved to configuration.'))
   } catch (error) {

@@ -11,7 +11,7 @@ async function registerPublisher () {
       {
         type: 'input',
         name: 'name',
-        message: 'Enter your email:',
+        message: 'Enter your name or publisher name:',
         validate: (input) => (input ? true : 'Name cannot be empty.')
       }
     ])
@@ -23,20 +23,25 @@ async function registerPublisher () {
       limited: true
     })
 
-    // The response is likely a JSON string containing the authToken
     const authToken = response.data
 
     // Save authToken to config
     config.authToken = authToken
 
+    // Create a cleaned config object excluding unwanted properties
+    const { _, configs, config: configPath, ...cleanConfig } = config
+
     // Write updated config to .dprc
-    const configPath = path.join(process.cwd(), '.dprc')
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2))
+    const configFilePath = path.join(process.cwd(), '.dprc')
+    fs.writeFileSync(configFilePath, JSON.stringify(cleanConfig, null, 2))
 
     console.log(chalk.green('Trial account registered successfully!'))
     console.log(chalk.green('Authentication token saved to configuration.'))
   } catch (error) {
-    console.error(chalk.red('Error registering trial account:'), error.response ? error.response.data : error.message)
+    console.error(
+      chalk.red('Error registering trial account:'),
+      error.response ? error.response.data : error.message
+    )
   }
 }
 
