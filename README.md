@@ -6,19 +6,19 @@ A **Command Line Interface (CLI)** for interacting with the Distributed Press AP
 
 - [Installation](#installation)
   - [Node.js and npm Setup](#nodejs-and-npm-setup)
-- [Setup](#setup)
-  - [Generate a Keypair](#generate-a-keypair)
+- [Distributed Press Setup](#distributed-press-setup)
+  - [Register as Publisher (Trial Account)](#register-as-publisher-trial-account)
   - [Set Your Authentication Token](#set-your-authentication-token)
+  - [Create Your Site](#create-your-site)
+  - [Publish Your Site](#publish-your-site)
+  - [DNS Setup](#dns-setup)
+  - [Clone an Existing Site](#clone-an-existing-site)
+- [Social Inbox Setup](#social-inbox-setup-send-posts-to-fediverse)
+  - [Generate a Keypair](#generate-a-keypair)
   - [Register Your Actor](#register-your-actor)
-- [Configuration](#configuration)
-- [Usage](#usage)
   - [Send a Post to Followers](#send-a-post-to-followers)
+- [Configuration](#configuration)
 - [Commands](#commands)
-  - [`generate-keypair`](#generate-keypair)
-  - [`set-auth-token`](#set-auth-token)
-  - [`register-actor`](#register-actor)
-  - [`send-post`](#send-post)
-- [Examples](#examples)
 - [License](#license)
 - [Resources](#resources)
 
@@ -54,9 +54,99 @@ npm install -g dp-cli
 
 Once installed, you can use `dp-cli` from anywhere in your terminal.
 
-## Setup
+## Distributed Press Setup
 
-Before using the CLI, you need to generate a keypair, set your authentication token, and register your ActivityPub actor.
+### Register as Publisher (Trial Account)
+
+Register a trial publisher account on Distributed Press using your email:
+
+```bash
+dp-cli register
+```
+
+You will be prompted for your name and email. Note: currently, only one site per email is allowed.
+
+### OR Set Your Authentication Token Manually
+
+Obtain your `authToken` from your Distributed Press API administrator and set it using:
+
+```bash
+dp-cli set-auth-token
+```
+
+You will be prompted to enter your authentication token.
+
+### Create Your Site
+
+Once registered, create a new site by specifying the domain name and whether it should be public:
+
+```bash
+dp-cli create-site
+```
+
+### Publish Your Site
+
+To upload and publish static content to the DP site from a specified directory:
+
+```bash
+dp-cli publish ./folder_here
+```
+
+### DNS Setup
+
+To use a custom domain for your Distributed Press site, you'll need to set up a DNS record to point to the Distributed Press infrastructure.
+
+### CNAME Record
+
+| Type  | Name          | Value                    |
+| ----- | ------------- | ------------------------ |
+| CNAME | `<your-site>` | `api.distributed.press.` |
+
+- Replace `your-site`` with your domain or subdomain name.
+- Ensure that the trailing dot `.` is included in `api.distributed.press.` as required.
+
+### \_dnslink Record
+
+To make your site accessible through Distributed Press, add the following **DNSLink** entries to your DNS configuration:
+
+| Type | Name                   | Value                              |
+| ---- | ---------------------- | ---------------------------------- |
+| TXT  | `_dnslink.example.com` | `dnslink=/ipns/<your_ipns_hash>`   |
+| TXT  | `_dnslink.example.com` | `dnslink=/hyper/<your_hyper_hash>` |
+
+### Example
+
+If your site links include:
+
+```json
+"ipfs": {
+  "dnslink": "/ipns/k51qzi5uqu5djj6yo1nne5r2oomxgroy3tezhgupvx0v2jlbighfah1k028sc1/"
+},
+"hyper": {
+  "dnslink": "/hyper/t685fd3snbadhqkss8spcgz454p95ap77kdfjafotsxfhhrhuqio/"
+}
+```
+
+You would configure your DNS records as follows:
+
+| Type | Name                   | Value                                                                           |
+| ---- | ---------------------- | ------------------------------------------------------------------------------- |
+| TXT  | `_dnslink.example.com` | `dnslink=/ipns/k51qzi5uqu5djj6yo1nne5r2oomxgroy3tezhgupvx0v2jlbighfah1k028sc1/` |
+| TXT  | `_dnslink.example.com` | `dnslink=/hyper/t685fd3snbadhqkss8spcgz454p95ap77kdfjafotsxfhhrhuqio/`          |
+
+After DNS propagation, users will be able to access the site at `example.com` over IPFS and Hyper.
+
+## Clone an Existing Site
+
+Clone a website by creating a static copy from its HTTP URL:
+
+```bash
+dp-cli clone-site --id <site-id>
+```
+
+## Social Inbox Setup (Send Posts to Fediverse)
+
+For using the Social Inbox, you need to generate a keypair and register your ActivityPub actor.
 
 ### Generate a Keypair
 
@@ -74,26 +164,6 @@ If you only plan to use the DP API for static file publishing, generating a keyp
 
 This will generate a keypair and save it to your `.dprc` configuration file.
 
-### Register as Publisher (Trial Account)
-
-Register a trial publisher account on Distributed Press using your email:
-
-```bash
-dp-cli register-publisher
-```
-
-You will be prompted for your name and email. Note: currently, only one site per email is allowed.
-
-### OR Set Your Authentication Token Manually
-
-Obtain your `authToken` from your Distributed Press API administrator and set it using:
-
-```bash
-dp-cli set-auth-token
-```
-
-You will be prompted to enter your authentication token.
-
 ### Register Your Actor
 
 Register your ActivityPub actor with the Social Inbox:
@@ -102,24 +172,21 @@ Register your ActivityPub actor with the Social Inbox:
 dp-cli register-actor
 ```
 
-**Prompts:**
-
-1. **Enter your actor username:**  
-   _(e.g., "@username@yourdomain.com")_
-
-2. **Enter your actor URL:**  
-   _(e.g., "https://yourdomain.com/actor")_
-
-3. **Enter your public key ID:**  
-   _(e.g., "https://yourdomain.com/actor#main-key")_
-
 This will register your actor with the Social Inbox and save the details to your configuration.
 
 ## Configuration
 
 The CLI uses a configuration file named `.dprc` to store API URLs, authentication tokens, keypairs, and actor information. The configuration file follows the format expected by the [`rc` module](https://www.npmjs.com/package/rc), which loads configuration options in a flexible way.
 
-### Configuration File Structure
+### Send a Post to Followers
+
+Publish a post to your followers:
+
+```bash
+dp-cli send-post --message "Hello, Fediverse!"
+```
+
+### Configuration
 
 Your `.dprc` file should look like this:
 
@@ -132,6 +199,7 @@ Your `.dprc` file should look like this:
     "publicKeyPem": "<your-public-key>",
     "privateKeyPem": "<your-private-key>"
   },
+  "domain": "<your-site-domain>",
   "actorUsername": "<your-actor-username>",
   "actorUrl": "<your-actor-url>",
   "publicKeyId": "<your-public-key-id>"
@@ -142,51 +210,25 @@ Your `.dprc` file should look like this:
 - **`socialInboxUrl`:** The base URL for the Social Inbox.
 - **`authToken`:** Your authentication token for API access.
 - **`keypair`:** Your public and private keys for secure interactions.
+- **`domain`:** Your custom domain for the site, e.g., example.com.
 - **`actorUsername`:** Your ActivityPub actor username.
 - **`actorUrl`:** The URL of your actor.
 - **`publicKeyId`:** The ID of your public key.
 
 _Ensure that your `.dprc` file is **not** committed to version control to keep your credentials secure._
 
-## Usage
-
-Once installed and configured, you can use the `dp-cli` command followed by specific commands to interact with the APIs.
-
-### Send a Post to Followers
-
-Publish a post to your followers:
-
-```bash
-dp-cli send-post --message "Hello, Fediverse!"
-```
-
-**Output:**
-
-```
-Sending a post to followers...
-Post sent successfully!
-Response: { ... }
-```
-
 ## Commands
 
-### `generate-keypair`
+### `register`
 
-**Description:**  
-Generate a new RSA keypair and save it to your configuration.
+**Description:**
+
+Register a trial publisher account with Distributed Press:
 
 **Usage:**
 
 ```bash
-dp-cli generate-keypair
-```
-
-### `register-publisher`
-
-Register a trial publisher account with Distributed Press:
-
-```bash
-dp-cli register-publisher
+dp-cli register
 ```
 
 ### `set-auth-token`
@@ -204,6 +246,58 @@ dp-cli set-auth-token
 
 - Enter your authentication token.
 
+### `create-site`
+
+**Description:**
+
+Create a new site by specifying the domain name and whether it should be public
+
+**Usage:**
+
+```bash
+dp-cli create-site
+```
+
+**Prompt:**
+
+- **Enter your site domain**: e.g., `example.com`
+- **Is your site public?** _(Yes/No)_
+
+### `publish-site`
+
+**Description:**
+
+Upload and publish static content to the DP site from a specified directory:
+
+**Usage:**
+
+```bash
+dp-cli publish ./folder_here
+```
+
+### `clone-site`
+
+**Description:**
+
+Clone a website by creating a static copy from its HTTP URL:
+
+**Usage:**
+
+```bash
+dp-cli clone-site --id <site-id>
+```
+
+### `generate-keypair`
+
+**Description:**  
+Generate a new RSA keypair and save it to your configuration.
+
+**Usage:**
+
+```bash
+dp-cli generate-keypair
+```
+
 ### `register-actor`
 
 **Description:**  
@@ -217,9 +311,14 @@ dp-cli register-actor
 
 **Prompts:**
 
-- Enter your actor username.
-- Enter your actor URL.
-- Enter your public key ID.
+1. **Enter your actor username:**  
+   _(e.g., "@username@yourdomain.com")_
+
+2. **Enter your actor URL:**  
+   _(e.g., "https://yourdomain.com/actor")_
+
+3. **Enter your public key ID:**  
+   _(e.g., "https://yourdomain.com/actor#main-key")_
 
 ### `send-post`
 
@@ -229,75 +328,12 @@ Send an activity post to your followers and publish it on the DP site:
 dp-cli send-post --path ./path_to_activity.json
 ```
 
-### `publish-site`
-
-Upload and publish static content to the DP site from a specified directory:
-
-```bash
-dp-cli publish ./folder_here
-```
-
-### `clone-site`
-
-Clone a website by creating a static copy from its HTTP URL:
-
-```bash
-dp-cli clone-site --id <site-id>
-```
-
-## Examples
-
-### Example: Full Workflow
-
-```bash
-# Register as a publisher
-dp-cli register-publisher
-```
-
-_Prompts:_
+**Output:**
 
 ```
-Enter your name: Alice
-Enter your email: alice@example.com
-```
-
-```bash
-# Generate a keypair
-dp-cli generate-keypair
-```
-
-```bash
-# Set your authentication token
-dp-cli set-auth-token
-```
-
-_Prompt:_
-
-```
-Enter your authentication token:
-```
-
-```bash
-# Register your actor
-dp-cli register-actor
-```
-
-_Prompts:_
-
-```
-Enter your actor username: @alice@yourdomain.com
-Enter your actor URL: https://yourdomain.com/alice
-Enter your public key ID: https://yourdomain.com/alice#main-key
-```
-
-```bash
-# Publish site content from a folder
-dp-cli publish ./folder_here
-```
-
-```bash
-# Send a post to followers with activity JSON
-dp-cli send-post --path ./path_to_activity.json
+Sending a post to followers...
+Post sent successfully!
+Response: { ... }
 ```
 
 ## License
