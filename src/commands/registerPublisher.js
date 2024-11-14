@@ -11,8 +11,8 @@ async function registerPublisher () {
       {
         type: 'input',
         name: 'name',
-        message: 'Enter your name or publisher name:',
-        validate: (input) => (input ? true : 'Name cannot be empty.')
+        message: 'Enter your email:',
+        validate: (input) => (input ? true : 'Email cannot be empty.')
       }
     ])
 
