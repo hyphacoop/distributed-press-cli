@@ -141,7 +141,7 @@ After DNS propagation, users will be able to access the site at `example.com` ov
 Clone a website by creating a static copy from its HTTP URL:
 
 ```bash
-dp-cli clone-site --id <site-id>
+dp-cli clone <site-id>
 ```
 
 ## Social Inbox Setup (Send Posts to Fediverse)
@@ -275,7 +275,7 @@ Upload and publish static content to the DP site from a specified directory:
 dp-cli publish ./folder_here
 ```
 
-### `clone-site`
+### `clone`
 
 **Description:**
 
@@ -284,7 +284,7 @@ Clone a website by creating a static copy from its HTTP URL:
 **Usage:**
 
 ```bash
-dp-cli clone-site --id <site-id>
+dp-cli clone <site-id>
 ```
 
 ### `generate-keypair`
