@@ -189,7 +189,7 @@ The CLI uses a configuration file named `.dprc` to store API URLs, authenticatio
 Publish a post to your followers:
 
 ```bash
-dp-cli send-post --message "Hello, Fediverse!"
+dp-cli send-post --path ./path_to_activity.json
 ```
 
 ### Configuration
