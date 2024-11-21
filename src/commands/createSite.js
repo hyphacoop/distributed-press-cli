@@ -2,8 +2,6 @@ const inquirer = require('inquirer')
 const chalk = require('chalk')
 const axios = require('axios')
 const config = require('../config/config')
-const fs = require('fs')
-const path = require('path')
 
 async function createSite () {
   try {

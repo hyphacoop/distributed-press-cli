@@ -3,6 +3,7 @@ const path = require('path')
 const chalk = require('chalk')
 const config = require('../config/config')
 const socialInboxApi = require('../api/socialInboxApi')
+const { v4: uuidv4 } = require('uuid') // Import uuidv4
 
 async function sendPost (activityPath) {
   try {

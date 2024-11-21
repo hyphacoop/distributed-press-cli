@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 const { Command } = require('commander')
-const chalk = require('chalk')
 const createSite = require('../src/commands/createSite')
 const registerActor = require('../src/commands/registerActor')
 const sendPost = require('../src/commands/sendPost')
