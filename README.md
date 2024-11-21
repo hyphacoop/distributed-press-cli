@@ -109,14 +109,16 @@ To use a custom domain for your Distributed Press site, you'll need to set up a 
 - Replace `your-site`` with your domain or subdomain name.
 - Ensure that the trailing dot `.` is included in `api.distributed.press.` as required.
 
-### \_dnslink Record
+### _dnslink Record
 
-To make your site accessible through Distributed Press, add the following **DNSLink** entries to your DNS configuration:
+To make your site accessible through Distributed Press, set an `NS Record` to delegate DNSLink lookups to Distributed Press.
 
 | Type | Name                   | Value                              |
 | ---- | ---------------------- | ---------------------------------- |
-| TXT  | `_dnslink.example.com` | `dnslink=/ipns/<your_ipns_hash>`   |
-| TXT  | `_dnslink.example.com` | `dnslink=/hyper/<your_hyper_hash>` |
+| NS  | `_dnslink` | `api.distributed.press.`   |
+
+- This eliminates the need to manually set TXT records.
+- [contact](mailto:hello@distributed.press) the Distributed Press team for assistance if needed.
 
 ### Example
 
@@ -131,14 +133,14 @@ If your site links include:
 }
 ```
 
-You would configure your DNS records as follows:
-
-| Type | Name                   | Value                                                                           |
-| ---- | ---------------------- | ------------------------------------------------------------------------------- |
-| TXT  | `_dnslink.example.com` | `dnslink=/ipns/k51qzi5uqu5djj6yo1nne5r2oomxgroy3tezhgupvx0v2jlbighfah1k028sc1/` |
-| TXT  | `_dnslink.example.com` | `dnslink=/hyper/t685fd3snbadhqkss8spcgz454p95ap77kdfjafotsxfhhrhuqio/`          |
+You only need to configure the `NS Record` as shown above. DNSLink propagation will handle IPFS and Hyper links automatically.
 
 After DNS propagation, users will be able to access the site at `example.com` over IPFS and Hyper.
+- ipns://example.com
+- hyper://example.com
+
+### SSL Requirements
+To use your custom domain, ensure that your domain has a valid HTTPS certificate. Most DNS providers offer free certificate generation via [Let's Encrypt](https://letsencrypt.org/) or similar services.
 
 ## Clone an Existing Site
 
