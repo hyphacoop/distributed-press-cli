@@ -30,7 +30,7 @@ async function patchSite (folder, siteId) {
     const globby = await loadGlobby()
 
     // Create a tarball of the folder
-    const tarballPath = path.join(process.cwd(), 'site-patch.tar')
+    const tarballPath = path.join(process.cwd(), 'site-patch.tar.gz')
     await tar.c(
       {
         gzip: true,
@@ -56,12 +56,34 @@ async function patchSite (folder, siteId) {
     })
 
     console.log(chalk.green('Site patched successfully!'))
-    console.log(`Updated Site Info: ${JSON.stringify(response.data, null, 2)}`)
+
+    // Fetch updated site info (if API returns empty response)
+    if (!response.data || Object.keys(response.data).length === 0) {
+      console.log(chalk.blue('Fetching updated site info...'))
+      const updatedResponse = await axios.get(`${config.dpApiUrl}/sites/${encodeURIComponent(siteId)}`, {
+        headers: {
+          Authorization: `Bearer ${config.authToken}`
+        }
+      })
+
+      if (updatedResponse.data) {
+        console.log(chalk.green('Updated Site Info:'))
+        console.log(JSON.stringify(updatedResponse.data, null, 2))
+      } else {
+        console.error(chalk.red('Failed to fetch updated site info.'))
+      }
+    } else {
+      console.log(`Updated Site Info: ${JSON.stringify(response.data, null, 2)}`)
+    }
 
     // Clean up the tarball
     fs.unlinkSync(tarballPath)
   } catch (error) {
-    console.error(chalk.red('Error patching site:', error.message))
+    if (error.response && error.response.data) {
+      console.error(chalk.red('Error patching site:'), JSON.stringify(error.response.data))
+    } else {
+      console.error(chalk.red('Error patching site:'), error.message)
+    }
   }
 }
 
