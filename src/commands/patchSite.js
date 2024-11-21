@@ -3,6 +3,7 @@ const path = require('path')
 const tar = require('tar')
 const axios = require('axios')
 const chalk = require('chalk')
+const FormData = require('form-data')
 const config = require('../config/config')
 
 async function loadGlobby () {
@@ -39,13 +40,17 @@ async function patchSite (folder, siteId) {
       await globby(['**/*'], { cwd: folder })
     )
 
-    // Read the tarball
-    const tarballData = fs.createReadStream(tarballPath)
+    // Prepare multipart/form-data with the tarball
+    const form = new FormData()
+    form.append('file', fs.createReadStream(tarballPath), {
+      filename: 'site-patch.tar.gz',
+      contentType: 'application/gzip'
+    })
 
     // Send the tarball to the API
-    const response = await axios.patch(`${config.dpApiUrl}/sites/${siteId}`, tarballData, {
+    const response = await axios.patch(`${config.dpApiUrl}/sites/${encodeURIComponent(siteId)}`, form, {
       headers: {
-        'Content-Type': 'application/gzip',
+        ...form.getHeaders(),
         Authorization: `Bearer ${config.authToken}`
       }
     })
