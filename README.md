@@ -96,6 +96,10 @@ dp-cli publish ./folder_here
 
 To use a custom domain for your Distributed Press site, you'll need to set up a DNS record to point to the Distributed Press infrastructure.
 
+#### Using Distributed Press Infrastructure
+- If you wish to use the official Distributed Press instance for your HTTPS traffic, [contact](mailto:hello@distributed.press) the Distributed Press team.
+- Alternatively, refer to the [documentation for self-hosting](https://docs.distributed.press/self-hosting/) for guidance on running your own infrastructure.
+
 ### CNAME Record
 
 | Type  | Name          | Value                    |
@@ -157,7 +161,7 @@ dp-cli generate-keypair
 ```
 
 **Purpose:**  
-This keypair is used for authenticating your interactions with the Social Inbox, ensuring secure communication and verifying your identity.
+This keypair is used for authenticating your interactions with the Social Inbox and the fediverse at large, ensuring secure communication and verifying your identity.
 
 **Note:**  
 If you only plan to use the DP API for static file publishing, generating a keypair might not be necessary. However, it's recommended for enhanced security and functionality when interacting with the Social Inbox.
