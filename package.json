@@ -7,7 +7,8 @@
     "dp-cli": "./bin/dp-cli.js"
   },
   "scripts": {
-    "start": "node ./bin/dp-cli.js"
+    "start": "node ./bin/dp-cli.js",
+    "lint": "standard --fix"
   },
   "keywords": [],
   "author": "distributed.press",
@@ -22,5 +23,8 @@
     "rc": "^1.2.8",
     "tar": "^7.4.3",
     "uuid": "^11.0.2"
+  },
+  "devDependencies": {
+    "standard": "^17.1.2"
   }
 }
