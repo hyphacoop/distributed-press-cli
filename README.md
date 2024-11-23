@@ -6,17 +6,19 @@ A **Command Line Interface (CLI)** for interacting with the Distributed Press AP
 
 - [Installation](#installation)
   - [Node.js and npm Setup](#nodejs-and-npm-setup)
-- [Distributed Press Setup](#distributed-press-setup)
-  - [Register as Publisher (Trial Account)](#register-as-publisher-trial-account)
+- [Distributed Press Setup](#distributed-press-setup-publish-website)
+  - [Register as Publisher (Trial Account)](#register-as-publisher)
   - [Set Your Authentication Token](#set-your-authentication-token)
   - [Create Your Site](#create-your-site)
   - [Publish Your Site](#publish-your-site)
   - [DNS Setup](#dns-setup)
   - [Clone an Existing Site](#clone-an-existing-site)
 - [Social Inbox Setup](#social-inbox-setup-send-posts-to-fediverse)
+  - [Use Staticpub Template](#use-staticpub-template)
   - [Generate a Keypair](#generate-a-keypair)
   - [Register Your Actor](#register-your-actor)
   - [Send a Post to Followers](#send-a-post-to-followers)
+  - [Patch a Site](#patch-a-site)
 - [Configuration](#configuration)
 - [Commands](#commands)
 - [License](#license)
@@ -54,9 +56,9 @@ npm install -g dp-cli
 
 Once installed, you can use `dp-cli` from anywhere in your terminal.
 
-## Distributed Press Setup
+## Distributed Press Setup (Publish Website)
 
-### Register as Publisher (Trial Account)
+### Register as Publisher
 
 Register a trial publisher account on Distributed Press using your email:
 
@@ -115,7 +117,7 @@ To make your site accessible through Distributed Press, set an `NS Record` to de
 
 | Type | Name                   | Value                              |
 | ---- | ---------------------- | ---------------------------------- |
-| NS  | `_dnslink` | `api.distributed.press.`   |
+| NS  | `_dnslink.your.domain` | `api.distributed.press.`   |
 
 - This eliminates the need to manually set TXT records.
 - [contact](mailto:hello@distributed.press) the Distributed Press team for assistance if needed.
@@ -152,6 +154,61 @@ dp-cli clone <site-id>
 
 ## Social Inbox Setup (Send Posts to Fediverse)
 
+### Use Staticpub Template
+1. Fork the Repository:
+Visit the [staticpub.distributed.press](https://github.com/hyphacoop/staticpub.distributed.press) repository on GitHub and click the "[Fork](https://github.com/hyphacoop/staticpub.distributed.press/fork)" button to create your own copy.
+
+2. Clone Your Fork:
+
+```bash
+git clone https://github.com/hyphacoop/staticpub.distributed.press.git
+cd staticpub.distributed.press
+```
+
+3. Replace Domain, Username, and Name:
+
+### For Linux Users:
+
+```bash
+find . -type f -exec sed -i 's/staticpub\.mauve\.moe/yourdomain\.com/g; s/mauve/username/g; s/"Mauve"/"Your Name"/g' {} +
+```
+
+### For macOS Users:
+
+```bash
+find . -type f -exec sed -i '' 's/staticpub\.mauve\.moe/yourdomain\.com/g; s/mauve/username/g; s/"Mauve"/"Your Name"/g' {} +
+```
+
+**This will replace:**
+- `staticpub.mauve.moe` → `yourdomain.com`
+- `mauve` → `yourusername`
+- `Mauve` → `Your Name`
+
+Make sure to update the `publicKeyPem` field in the following files with your actual public key from the `.dprc` configuration file:
+
+- `about.jsonld`
+- `about-ipns.jsonld`
+
+### How to Find Your Public Key:
+
+1. Open your `.dprc` file (generated during setup).
+2. Copy the value of `"publicKeyPem"` (including the `BEGIN` and `END` lines).
+3. Paste it into the `publicKeyPem` field in the JSON files mentioned above.
+
+### Example:
+
+```json
+    "publicKey": {
+      "@context": "https://w3id.org/security/v1",
+      "@type": "Key",
+      "id": "https://staticpub.mauve.moe/about.jsonld#main-key",
+      "owner": "https://staticpub.mauve.moe/about.jsonld",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nYOUR_PUBLIC_KEY_HERE\n-----END PUBLIC KEY-----\n"
+    }
+```
+
+Replace `YOUR_PUBLIC_KEY_HERE` with your actual public key from `.dprc`.
+
 For using the Social Inbox, you need to generate a keypair and register your ActivityPub actor.
 
 ### Generate a Keypair
@@ -180,19 +237,34 @@ dp-cli register-actor
 
 This will register your actor with the Social Inbox and save the details to your configuration.
 
-## Configuration
+### Publish the Staticpub Template
 
-The CLI uses a configuration file named `.dprc` to store API URLs, authentication tokens, keypairs, and actor information. The configuration file follows the format expected by the [`rc` module](https://www.npmjs.com/package/rc), which loads configuration options in a flexible way.
+Please follow the steps from this section:
+- [Distributed Press Setup](#distributed-press-setup-publish-website)
 
 ### Send a Post to Followers
 
-Publish a post to your followers:
+Published the template? Now, let's send a post to your followers:
 
 ```bash
-dp-cli send-post --path ./path_to_activity.json
+dp-cli send-post ./path_to_activity.json
 ```
 
-### Configuration
+#### Example (as per the staticpub template):
+```bash
+dp-cli send-post ./posts/helloworld.jsonld
+```
+
+### Patch a Site
+After publishing your site and registering your actor, you might need to update your site with new content or activities. Use the `patch` command to add the note/activity JSON and update the outbox with the new activity.
+
+```bash
+dp-cli patch -i <site-id> ./path_to_patch_folder
+```
+
+## Configuration
+
+The CLI uses a configuration file named `.dprc` to store API URLs, authentication tokens, keypairs, and actor information. The configuration file follows the format expected by the [`rc` module](https://www.npmjs.com/package/rc), which loads configuration options in a flexible way.
 
 Your `.dprc` file should look like this:
 
