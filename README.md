@@ -170,19 +170,19 @@ cd staticpub.distributed.press
 ### For Linux Users:
 
 ```bash
-find . -type f -exec sed -i 's/staticpub\.mauve\.moe/yourdomain\.com/g; s/mauve/username/g; s/"Mauve"/"Your Name"/g' {} +
+find . -type f -exec sed -i 's/staticpub\.distributed\.press/yourdomain\.com/g; s/dp/username/g; s/"Distributed Press"/"Your Name"/g' {} +
 ```
 
 ### For macOS Users:
 
 ```bash
-find . -type f -exec sed -i '' 's/staticpub\.mauve\.moe/yourdomain\.com/g; s/mauve/username/g; s/"Mauve"/"Your Name"/g' {} +
+find . -type f -exec sed -i '' 's/staticpub\.distributed\.press/yourdomain\.com/g; s/dp/username/g; s/"Distributed Press"/"Your Name"/g' {} +
 ```
 
 **This will replace:**
-- `staticpub.mauve.moe` → `yourdomain.com`
-- `mauve` → `yourusername`
-- `Mauve` → `Your Name`
+- `staticpub.distributed.press` → `yourdomain.com`
+- `dp` → `yourusername`
+- `Distributed Press` → `Your Name`
 
 Make sure to update the `publicKeyPem` field in the following files with your actual public key from the `.dprc` configuration file:
 
@@ -201,8 +201,8 @@ Make sure to update the `publicKeyPem` field in the following files with your ac
     "publicKey": {
       "@context": "https://w3id.org/security/v1",
       "@type": "Key",
-      "id": "https://staticpub.mauve.moe/about.jsonld#main-key",
-      "owner": "https://staticpub.mauve.moe/about.jsonld",
+      "id": "https://staticpub.distributed.press/about.jsonld#main-key",
+      "owner": "https://staticpub.distributed.press/about.jsonld",
       "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nYOUR_PUBLIC_KEY_HERE\n-----END PUBLIC KEY-----\n"
     }
 ```
