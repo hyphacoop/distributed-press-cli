@@ -1,19 +1,14 @@
 const axios = require('axios')
 const chalk = require('chalk')
 const config = require('../config/config')
-const path = require('path')
 
-async function loadWebsiteScraper () {
-  // Dynamically import the ES module `website-scraper`
-  return await import('website-scraper')
-}
-
-async function cloneSite (siteId, outputDir) {
+async function cloneSite (siteId) {
   try {
     console.log(chalk.blue(`Cloning site with ID: ${siteId}`))
 
     // Trigger server-side cloning
-    await axios.post(`${config.dpApiUrl}/sites/${encodeURIComponent(siteId)}/clone`, null, {
+    const cloneUrl = `${config.dpApiUrl}/sites/${encodeURIComponent(siteId)}/clone`
+    await axios.post(cloneUrl, null, {
       headers: {
         Authorization: `Bearer ${config.authToken}`,
         'Content-Type': 'application/json'
@@ -23,31 +18,53 @@ async function cloneSite (siteId, outputDir) {
 
     console.log(chalk.green('Server-side cloning initiated successfully!'))
 
-    // Proceed to download the site content locally
-    const outputDirectory = outputDir || path.join(process.cwd(), siteId)
-
-    let siteUrl = siteId
-    if (!siteUrl.startsWith('http://') && !siteUrl.startsWith('https://')) {
-      siteUrl = `https://${siteUrl}`
-    }
-
-    console.log(chalk.blue(`Downloading site content from ${siteUrl} to ${outputDirectory}...`))
-
-    // Dynamically load `website-scraper`
-    const { default: scrape } = await loadWebsiteScraper()
-
-    await scrape({
-      urls: [siteUrl],
-      directory: outputDirectory,
-      recursive: true,
-      maxRecursiveDepth: 10,
-      urlFilter: (url) => url.startsWith(siteUrl)
+    // Fetch updated site info
+    const siteInfoUrl = `${config.dpApiUrl}/sites/${encodeURIComponent(siteId)}`
+    const response = await axios.get(siteInfoUrl, {
+      headers: {
+        Authorization: `Bearer ${config.authToken}`
+      }
     })
 
-    console.log(chalk.green('Site content downloaded successfully!'))
-    console.log(`Site content saved to: ${outputDirectory}`)
+    if (response.data && Object.keys(response.data).length > 0) {
+      console.log(chalk.green('Cloned Site Info:'))
+      console.log(JSON.stringify(response.data, null, 2))
+    } else {
+      console.log(chalk.yellow('No site information was returned by the API.'))
+    }
   } catch (error) {
-    console.error(chalk.red('Error cloning site:'), error.message)
+    handleCloneError(error)
+  }
+}
+
+function handleCloneError (error) {
+  if (error.response) {
+    console.error(
+      chalk.red('Error cloning site:'),
+      `Status: ${error.response.status}, Message: ${error.response.statusText}`
+    )
+    if (error.response.data) {
+      console.error(chalk.red('Response Data:'), JSON.stringify(error.response.data, null, 2))
+    } else {
+      console.error(chalk.red('No response data available.'))
+    }
+
+    if (
+      error.response.status === 500 &&
+      error.response.data &&
+      error.response.data.message &&
+      error.response.data.message.includes('The certificate is NOT trusted')
+    ) {
+      console.error(
+        chalk.yellow('Hint:'),
+        'It appears that the server is unable to clone your site due to an SSL certificate trust issue. Please ensure your domain has a valid, trusted SSL certificate that matches your domain name.'
+      )
+    }
+  } else if (error.request) {
+    console.error(chalk.red('No response received from the server.'))
+    console.error(error.request)
+  } else {
+    console.error(chalk.red('Error setting up the request:'), error.message)
   }
 }
 
