@@ -58,21 +58,26 @@ async function registerActor (actorUsername, actorInfo) {
 
 async function sendPost (actorUsername, activity) {
   try {
-    const httpsig = await loadHttpSignedFetch()
-    const url = `${config.socialInboxUrl}/${encodeURIComponent(actorUsername)}/outbox`
-    const signer = new httpsig.Signer({
-      keyId: config.publicKeyId,
-      privateKey: config.keypair.privateKeyPem,
-      headers: ['(request-target)', 'host', 'date', 'digest']
-    })
+    const fetch = await loadHttpSignedFetch()
 
-    const response = await httpsig.fetch(url, {
+    const url = `${config.socialInboxUrl}/${encodeURIComponent(actorUsername)}/outbox`
+
+    // Debugging: Log the request details
+    console.log(chalk.blue('Sending to URL:'), url)
+    console.log(chalk.blue('Activity Payload:'), JSON.stringify(activity, null, 2))
+    console.log(chalk.blue('Keypair being used:'), config.keypair)
+    console.log(chalk.blue('PublicKeyId being used:'), config.publicKeyId)
+
+    const response = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify(activity),
       headers: {
-        'Content-Type': 'application/ld+json'
+        'Content-Type': 'application/ld+json',
+        date: new Date().toUTCString(),
+        host: new URL(url).host
       },
-      signer
+      keypair: config.keypair, // Private and public key
+      publicKeyId: config.publicKeyId,
+      body: JSON.stringify(activity)
     })
 
     if (!response.ok) {
@@ -84,7 +89,7 @@ async function sendPost (actorUsername, activity) {
     return { data }
   } catch (error) {
     console.error(
-      chalk.red('Social Inbox API Error:', error.response ? error.response.data : error.message)
+      chalk.red('Social Inbox API Error:', error.message)
     )
     throw error
   }

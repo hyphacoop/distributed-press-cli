@@ -3,7 +3,6 @@ const path = require('path')
 const chalk = require('chalk')
 const config = require('../config/config')
 const socialInboxApi = require('../api/socialInboxApi')
-const { v4: uuidv4 } = require('uuid') // Import uuidv4
 
 async function sendPost (activityPath) {
   try {
@@ -29,10 +28,8 @@ async function sendPost (activityPath) {
       return
     }
 
-    // Read the activity from the file
+    // Read and parse the activity JSON file
     const activityData = fs.readFileSync(resolvedPath, 'utf-8')
-
-    // Parse the activity JSON
     const activity = JSON.parse(activityData)
 
     // Validate the activity
@@ -41,18 +38,15 @@ async function sendPost (activityPath) {
       return
     }
 
-    // Optionally, update activity IDs and timestamps
-    const activityId = `${config.socialInboxUrl}/${encodeURIComponent(actorUsername)}/outbox/${uuidv4()}`
-    activity.id = activity.id || activityId
-    activity.published = activity.published || new Date().toISOString()
+    // Ensure required fields are present
     activity.actor = activity.actor || config.actorUrl
+    activity.published = activity.published || new Date().toISOString()
 
-    // If the activity contains an object (e.g., a Note), ensure it has an ID
     if (activity.object && !activity.object.id) {
-      activity.object.id = `${activity.id}#object`
+      activity.object.id = `${activity.id || config.actorUrl}#object`
     }
 
-    // Send post via Social Inbox API
+    // Send the activity to the Social Inbox API
     const response = await socialInboxApi.sendPost(actorUsername, activity)
 
     console.log(chalk.green('Post sent successfully!'))
