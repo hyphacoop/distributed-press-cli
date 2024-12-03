@@ -14,19 +14,20 @@ async function registerActor () {
         type: 'input',
         name: 'actorUsername',
         message: 'Enter your actor username (e.g., @username@domain.com):',
-        validate: (input) => input ? true : 'Actor username cannot be empty.'
+        validate: (input) => (input ? true : 'Actor username cannot be empty.')
       },
       {
         type: 'input',
         name: 'actorUrl',
         message: 'Enter your actor URL:',
-        validate: (input) => /^https?:\/\/.+/.test(input) ? true : 'Please enter a valid URL.'
+        validate: (input) =>
+          /^https?:\/\/.+/.test(input) ? true : 'Please enter a valid URL.'
       },
       {
         type: 'input',
         name: 'publicKeyId',
         message: 'Enter your public key ID (e.g., https://domain.com/actor#main-key):',
-        validate: (input) => input ? true : 'Public key ID cannot be empty.'
+        validate: (input) => (input ? true : 'Public key ID cannot be empty.')
       }
     ])
 
@@ -35,9 +36,12 @@ async function registerActor () {
     config.actorUrl = answers.actorUrl
     config.publicKeyId = answers.publicKeyId
 
+    // Create a cleaned config object excluding unwanted properties
+    const { _, configs, config: configPath, ...cleanConfig } = config
+
     // Write updated config to .dprc
-    const configPath = path.join(process.cwd(), '.dprc')
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2))
+    const configFilePath = path.join(process.cwd(), '.dprc')
+    fs.writeFileSync(configFilePath, JSON.stringify(cleanConfig, null, 2))
 
     const actorInfo = {
       actorUrl: answers.actorUrl,

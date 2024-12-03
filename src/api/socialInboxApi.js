@@ -1,28 +1,44 @@
 const config = require('../config/config')
 const chalk = require('chalk')
 
-async function loadHttpSig () {
-  // Dynamically import the `http-signed-fetch` package.
-  return await import('http-signed-fetch')
+async function loadHttpSignedFetch () {
+  try {
+    const fetchModule = await import('http-signed-fetch')
+    const fetch = fetchModule.default || fetchModule.fetch
+
+    if (typeof fetch !== 'function') {
+      throw new Error('fetch is not a function in http-signed-fetch')
+    }
+
+    return fetch
+  } catch (error) {
+    console.error(chalk.red('Failed to load http-signed-fetch:'), error.message)
+    throw error
+  }
 }
 
 async function registerActor (actorUsername, actorInfo) {
   try {
-    const httpsig = await loadHttpSig()
-    const url = `${config.socialInboxUrl}/${encodeURIComponent(actorUsername)}`
-    const signer = new httpsig.Signer({
-      keyId: actorInfo.publicKeyId,
-      privateKey: actorInfo.keypair.privateKeyPem,
-      headers: ['(request-target)', 'host', 'date', 'digest']
-    })
+    const fetch = await loadHttpSignedFetch()
 
-    const response = await httpsig.fetch(url, {
+    const url = `${config.socialInboxUrl}/${encodeURIComponent(actorUsername)}`
+    const response = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify(actorInfo),
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        date: new Date().toUTCString(),
+        host: new URL(url).host
       },
-      signer
+      keypair: actorInfo.keypair, // Private and public key
+      publicKeyId: actorInfo.publicKeyId,
+      body: JSON.stringify({
+        actorUrl: actorInfo.actorUrl,
+        publicKeyId: actorInfo.publicKeyId,
+        keypair: {
+          publicKeyPem: actorInfo.keypair.publicKeyPem,
+          privateKeyPem: actorInfo.keypair.privateKeyPem
+        }
+      })
     })
 
     if (!response.ok) {
@@ -34,7 +50,7 @@ async function registerActor (actorUsername, actorInfo) {
     return { data }
   } catch (error) {
     console.error(
-      chalk.red('Social Inbox API Error:', error.response ? error.response.data : error.message)
+      chalk.red('Social Inbox API Error:', error.message)
     )
     throw error
   }
@@ -42,7 +58,7 @@ async function registerActor (actorUsername, actorInfo) {
 
 async function sendPost (actorUsername, activity) {
   try {
-    const httpsig = await loadHttpSig()
+    const httpsig = await loadHttpSignedFetch()
     const url = `${config.socialInboxUrl}/${encodeURIComponent(actorUsername)}/outbox`
     const signer = new httpsig.Signer({
       keyId: config.publicKeyId,

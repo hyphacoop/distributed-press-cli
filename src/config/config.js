@@ -7,7 +7,11 @@ const defaults = {
   keypair: {
     publicKeyPem: '',
     privateKeyPem: ''
-  }
+  },
+  domain: '',
+  actorUsername: '',
+  actorUrl: '',
+  publicKeyId: ''
 }
 
 const config = rc('dp', defaults)
