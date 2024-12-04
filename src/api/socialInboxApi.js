@@ -65,32 +65,35 @@ async function sendPost (actorUsername, activity) {
     // Debugging: Log the request details
     console.log(chalk.blue('Sending to URL:'), url)
     console.log(chalk.blue('Activity Payload:'), JSON.stringify(activity, null, 2))
-    console.log(chalk.blue('Keypair being used:'), config.keypair)
     console.log(chalk.blue('PublicKeyId being used:'), config.publicKeyId)
 
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/ld+json',
-        date: new Date().toUTCString(),
-        host: new URL(url).host
+        'Content-Type': 'application/ld+json'
       },
-      keypair: config.keypair, // Private and public key
+      keypair: config.keypair,
       publicKeyId: config.publicKeyId,
       body: JSON.stringify(activity)
     })
 
     if (!response.ok) {
       const errorText = await response.text()
+
+      // Log the response for debugging
+      console.error(chalk.red('Response Headers:'))
+      response.headers.forEach((value, key) => {
+        console.error(chalk.red(`${key}: ${value}`))
+      })
+      console.error(chalk.red('Response Body:'), errorText)
+
       throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`)
     }
 
     const data = await response.json()
     return { data }
   } catch (error) {
-    console.error(
-      chalk.red('Social Inbox API Error:', error.message)
-    )
+    console.error(chalk.red('Social Inbox API Error:', error.message))
     throw error
   }
 }

@@ -1,8 +1,8 @@
 const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
-const config = require('../config/config')
 const socialInboxApi = require('../api/socialInboxApi')
+const config = require('../config/config')
 
 async function sendPost (activityPath) {
   try {
@@ -28,29 +28,44 @@ async function sendPost (activityPath) {
       return
     }
 
-    // Read and parse the activity JSON file
-    const activityData = fs.readFileSync(resolvedPath, 'utf-8')
-    const activity = JSON.parse(activityData)
+    // Read and parse the Note JSON file
+    const noteData = fs.readFileSync(resolvedPath, 'utf-8')
+    const note = JSON.parse(noteData)
 
-    // Validate the activity
-    if (!activity || !activity.type) {
-      console.error(chalk.red('Invalid activity data. Please provide a valid ActivityStreams JSON.'))
+    // Validate the Note
+    if (!note || !note.type || note.type !== 'Note') {
+      console.error(chalk.red('Invalid Note data. Please provide a valid ActivityStreams Note JSON.'))
       return
     }
 
-    // Ensure required fields are present
-    activity.actor = activity.actor || config.actorUrl
-    activity.published = activity.published || new Date().toISOString()
+    // Get the domain dynamically from config
+    const domain = config.domain
 
-    if (activity.object && !activity.object.id) {
-      activity.object.id = `${activity.id || config.actorUrl}#object`
+    // Create a Create Activity that references the Note
+    const activityId = `https://${domain}/activities/${path.basename(activityPath, '.jsonld')}.jsonld`
+
+    const createActivity = {
+      '@context': 'https://www.w3.org/ns/activitystreams',
+      id: activityId,
+      type: 'Create',
+      actor: config.actorUrl,
+      published: new Date().toISOString(),
+      to: ['https://www.w3.org/ns/activitystreams#Public'],
+      object: note
     }
 
-    // Send the activity to the Social Inbox API
-    const response = await socialInboxApi.sendPost(actorUsername, activity)
+    // Optional: Log the Create Activity being sent for debugging
+    console.log(chalk.blue('Create Activity being sent:'), JSON.stringify(createActivity, null, 2))
 
-    console.log(chalk.green('Post sent successfully!'))
-    console.log(`Response: ${JSON.stringify(response.data, null, 2)}`)
+    // Send the Create Activity to the Social Inbox API
+    const response = await socialInboxApi.sendPost(actorUsername, createActivity)
+
+    if (response && response.data) {
+      console.log(chalk.green('Post sent successfully!'))
+      console.log(`Response: ${JSON.stringify(response.data, null, 2)}`)
+    } else {
+      console.error(chalk.red('Error sending post: No response data received'))
+    }
   } catch (error) {
     console.error(chalk.red('Error sending post:'), error.message)
   }
