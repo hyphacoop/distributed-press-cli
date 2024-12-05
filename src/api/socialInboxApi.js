@@ -37,7 +37,8 @@ async function registerActor (actorUsername, actorInfo) {
         keypair: {
           publicKeyPem: actorInfo.keypair.publicKeyPem,
           privateKeyPem: actorInfo.keypair.privateKeyPem
-        }
+        },
+        announce: true
       })
     })
 
