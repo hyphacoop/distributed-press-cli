@@ -62,7 +62,7 @@ async function sendPost (activityPath) {
 
     if (response && response.data) {
       console.log(chalk.green('Post sent successfully!'))
-      console.log(`Response: ${JSON.stringify(response.data, null, 2)}`)
+      // console.log(`Response: ${JSON.stringify(response.data, null, 2)}`)
     } else {
       console.error(chalk.red('Error sending post: No response data received'))
     }
