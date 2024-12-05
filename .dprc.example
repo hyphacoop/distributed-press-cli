@@ -1,0 +1,12 @@
+{
+  "dpApiUrl": "https://api.distributed.press/v1",
+  "socialInboxUrl": "https://social.distributed.press/v1",
+  "authToken": "<your-auth-token>",
+  "keypair": {
+    "publicKeyPem": "<your-public-key>",
+    "privateKeyPem": "<your-private-key>"
+  },
+  "actorUsername": "<your-actor-username>",
+  "actorUrl": "<your-actor-url>",
+  "publicKeyId": "<your-public-key-id>"
+}
