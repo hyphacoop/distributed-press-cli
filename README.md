@@ -227,6 +227,16 @@ If you only plan to use the DP API for static file publishing, generating a keyp
 
 This will generate a keypair and save it to your `.dprc` configuration file.
 
+### ⚠️ Publish the Staticpub Template
+Make sure your site is published before registering an actor and sending a post, as this is a prerequisite for proper functionality and includes your public key for signing.
+
+Please follow the steps from this section:
+- [Distributed Press Setup](#distributed-press-setup-publish-website)
+
+Additionally, ensure that the WebFinger `/.well-known` file is correctly published for your domain. To automate this process, you can set up [GitHub Actions](https://docs.distributed.press/deployment/github-actions/) in the workflows directory.
+
+Alternatively, you can use the staticpub's [publish.yml](https://github.com/hyphacoop/staticpub.distributed.press/blob/main/.github/workflows/publish.yml). Be sure to update the `site_url` and add your secret `DISTRIBUTED_PRESS_TOKEN` in the workflow configuration.
+
 ### Register Your Actor
 
 Register your ActivityPub actor with the Social Inbox:
@@ -236,11 +246,6 @@ dp-cli register-actor
 ```
 
 This will register your actor with the Social Inbox and save the details to your configuration.
-
-### Publish the Staticpub Template
-
-Please follow the steps from this section:
-- [Distributed Press Setup](#distributed-press-setup-publish-website)
 
 ### Send a Post to Followers
 
