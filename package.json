@@ -4,10 +4,10 @@
   "description": "CLI for interacting with Distributed Press API and Social Inbox",
   "main": "src/index.js",
   "bin": {
-    "dp-cli": "./bin/dp-cli.js"
+    "dpress": "./bin/dpress.js"
   },
   "scripts": {
-    "start": "node ./bin/dp-cli.js",
+    "start": "node ./bin/dpress.js",
     "lint": "standard --fix"
   },
   "keywords": [],

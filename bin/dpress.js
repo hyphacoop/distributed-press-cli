@@ -13,7 +13,7 @@ const cloneSite = require('../src/commands/cloneSite')
 const program = new Command()
 
 program
-  .name('dp-cli')
+  .name('dpress')
   .description('CLI for interacting with Distributed Press API and Social Inbox')
   .version('1.0.0')
 
@@ -27,7 +27,7 @@ program
   .addHelpText('after', `
   
 Examples:
-  $ dp-cli create-site
+  $ dpress create-site
 `)
 
 program

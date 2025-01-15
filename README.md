@@ -28,7 +28,7 @@ A **Command Line Interface (CLI)** for interacting with the Distributed Press AP
 
 ### Node.js and npm Setup
 
-To use `dp-cli`, you’ll need Node.js and npm. Please refer to the [Node.js official documentation](https://nodejs.org/) to install Node.js. Once installed, npm (Node Package Manager) will be available, allowing you to run commands like `npx` and `npm`.
+To use `dpress`, you’ll need Node.js and npm. Please refer to the [Node.js official documentation](https://nodejs.org/) to install Node.js. Once installed, npm (Node Package Manager) will be available, allowing you to run commands like `npx` and `npm`.
 
 - **npm**: Comes bundled with Node.js. Verify installation by running:
   ```bash
@@ -40,21 +40,21 @@ For additional help with npm commands, see the [npm documentation](https://docs.
 
 ### Using npx
 
-You can use `dp-cli` without installation by running:
+You can use `dpress` without installation by running:
 
 ```bash
-npx dp-cli <command>
+npx dpress <command>
 ```
 
 ### Global Installation with npm
 
-To install `dp-cli` globally, use:
+To install `dpress` globally, use:
 
 ```bash
-npm install -g dp-cli
+npm install -g dpress
 ```
 
-Once installed, you can use `dp-cli` from anywhere in your terminal.
+Once installed, you can use `dpress` from anywhere in your terminal.
 
 ## Distributed Press Setup (Publish Website)
 
@@ -63,7 +63,7 @@ Once installed, you can use `dp-cli` from anywhere in your terminal.
 Register a trial publisher account on Distributed Press using your email:
 
 ```bash
-dp-cli register
+dpress register
 ```
 
 You will be prompted for your name and email. Note: currently, only one site per email is allowed.
@@ -73,7 +73,7 @@ You will be prompted for your name and email. Note: currently, only one site per
 Obtain your `authToken` from your Distributed Press API administrator and set it using:
 
 ```bash
-dp-cli set-auth-token
+dpress set-auth-token
 ```
 
 You will be prompted to enter your authentication token.
@@ -83,7 +83,7 @@ You will be prompted to enter your authentication token.
 Once registered, create a new site by specifying the domain name and whether it should be public:
 
 ```bash
-dp-cli create-site
+dpress create-site
 ```
 
 ### Publish Your Site
@@ -91,7 +91,7 @@ dp-cli create-site
 To upload and publish static content to the DP site from a specified directory:
 
 ```bash
-dp-cli publish ./folder_here
+dpress publish ./folder_here
 ```
 
 ### DNS Setup
@@ -149,7 +149,7 @@ To use your custom domain, ensure that your domain has a valid HTTPS certificate
 Clone a website by creating a static copy from its HTTP URL:
 
 ```bash
-dp-cli clone <site-id>
+dpress clone <site-id>
 ```
 
 ## Social Inbox Setup (Send Posts to Fediverse)
@@ -216,7 +216,7 @@ For using the Social Inbox, you need to generate a keypair and register your Act
 Run the following command to generate a new RSA keypair:
 
 ```bash
-dp-cli generate-keypair
+dpress generate-keypair
 ```
 
 **Purpose:**  
@@ -242,7 +242,7 @@ Alternatively, you can use the staticpub's [publish.yml](https://github.com/hyph
 Register your ActivityPub actor with the Social Inbox:
 
 ```bash
-dp-cli register-actor
+dpress register-actor
 ```
 
 This will register your actor with the Social Inbox and save the details to your configuration.
@@ -252,19 +252,19 @@ This will register your actor with the Social Inbox and save the details to your
 Published the template? Now, let's send a post to your followers:
 
 ```bash
-dp-cli send-post ./path_to_activity.json
+dpress send-post ./path_to_activity.json
 ```
 
 #### Example (as per the staticpub template):
 ```bash
-dp-cli send-post ./posts/helloworld.jsonld
+dpress send-post ./posts/helloworld.jsonld
 ```
 
 ### Patch a Site
 After publishing your site and registering your actor, you might need to update your site with new content or activities. Use the `patch` command to add the note/activity JSON and update the outbox with the new activity.
 
 ```bash
-dp-cli patch -i <site-id> ./path_to_patch_folder
+dpress patch -i <site-id> ./path_to_patch_folder
 ```
 
 ## Configuration
@@ -311,7 +311,7 @@ Register a trial publisher account with Distributed Press:
 **Usage:**
 
 ```bash
-dp-cli register
+dpress register
 ```
 
 ### `set-auth-token`
@@ -322,7 +322,7 @@ Set your authentication token for API access.
 **Usage:**
 
 ```bash
-dp-cli set-auth-token
+dpress set-auth-token
 ```
 
 **Prompt:**
@@ -338,7 +338,7 @@ Create a new site by specifying the domain name and whether it should be public
 **Usage:**
 
 ```bash
-dp-cli create-site
+dpress create-site
 ```
 
 **Prompt:**
@@ -355,7 +355,7 @@ Upload and publish static content to the DP site from a specified directory:
 **Usage:**
 
 ```bash
-dp-cli publish ./folder_here
+dpress publish ./folder_here
 ```
 
 ### `clone`
@@ -367,7 +367,7 @@ Clone a website by creating a static copy from its HTTP URL:
 **Usage:**
 
 ```bash
-dp-cli clone <site-id>
+dpress clone <site-id>
 ```
 
 ### `generate-keypair`
@@ -378,7 +378,7 @@ Generate a new RSA keypair and save it to your configuration.
 **Usage:**
 
 ```bash
-dp-cli generate-keypair
+dpress generate-keypair
 ```
 
 ### `register-actor`
@@ -389,7 +389,7 @@ Register your ActivityPub actor with the Social Inbox.
 **Usage:**
 
 ```bash
-dp-cli register-actor
+dpress register-actor
 ```
 
 **Prompts:**
@@ -408,7 +408,7 @@ dp-cli register-actor
 Send an activity post to your followers and publish it on the DP site:
 
 ```bash
-dp-cli send-post --path ./path_to_activity.json
+dpress send-post --path ./path_to_activity.json
 ```
 
 **Output:**
