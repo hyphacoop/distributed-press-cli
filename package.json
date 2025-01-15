@@ -13,6 +13,10 @@
   "keywords": [],
   "author": "distributed.press",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hyphacoop/distributed-press-cli"
+  },
   "dependencies": {
     "axios": "^1.7.7",
     "chalk": "^4.1.2",
