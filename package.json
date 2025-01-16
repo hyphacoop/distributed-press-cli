@@ -4,15 +4,19 @@
   "description": "CLI for interacting with Distributed Press API and Social Inbox",
   "main": "src/index.js",
   "bin": {
-    "dp-cli": "./bin/dp-cli.js"
+    "dpress": "./bin/dpress.js"
   },
   "scripts": {
-    "start": "node ./bin/dp-cli.js",
+    "start": "node ./bin/dpress.js",
     "lint": "standard --fix"
   },
   "keywords": [],
   "author": "distributed.press",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hyphacoop/distributed-press-cli"
+  },
   "dependencies": {
     "axios": "^1.7.7",
     "chalk": "^4.1.2",
