@@ -1,5 +1,5 @@
 {
-  "name": "distributed-press-cli",
+  "name": "dpress",
   "version": "1.0.0",
   "description": "CLI for interacting with Distributed Press API and Social Inbox",
   "main": "src/index.js",
